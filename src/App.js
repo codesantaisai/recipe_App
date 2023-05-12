@@ -6,8 +6,8 @@ function App() {
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
 
-  const APP_ID = "<YOUR_APP_ID>";
-  const APP_KEY = "<YOUR_APP_KEY>";
+  const APP_ID = "a2a48e4d";
+  const APP_KEY = "a50c8619afb7c7898a57c57a5a05a944";
 
   useEffect(() => {
     const getRecipes = async () => {
