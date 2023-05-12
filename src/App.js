@@ -1,23 +1,65 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import "./App.css";
 
 function App() {
+  const [recipes, setRecipes] = useState([]);
+  const [search, setSearch] = useState("");
+  const [query, setQuery] = useState("");
+
+  const APP_ID = "a2a48e4d";
+  const APP_KEY = "a50c8619afb7c7898a57c57a5a05a944	";
+
+  useEffect(() => {
+    getRecipes();
+  }, [query]);
+
+  const getRecipes = async () => {
+    const response = await fetch(
+      `https://api.edamam.com/search?q=${query}&app_id=${APP_ID}&app_key=${APP_KEY}`
+    );
+    const data = await response.json();
+    setRecipes(data.hits);
+  };
+
+  const updateSearch = (event) => {
+    setSearch(event.target.value);
+  };
+
+  const getSearch = (event) => {
+    event.preventDefault();
+    setQuery(search);
+    setSearch("");
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Recipe App</h1>
+      <form onSubmit={getSearch} className="search-form">
+        <input
+          type="text"
+          className="search-bar"
+          value={search}
+          onChange={updateSearch}
+        />
+        <button type="submit" className="search-button">
+          Search
+        </button>
+      </form>
+      <div className="recipes">
+        {recipes.map((recipe) => (
+          <div key={recipe.recipe.label} className="recipe">
+            <h2>{recipe.recipe.label}</h2>
+            <img src={recipe.recipe.image} alt={recipe.recipe.label} />
+            <ul>
+              {recipe.recipe.ingredients.map((ingredient) => (
+                <li>{ingredient.text}</li>
+              ))}
+            </ul>
+            <p>Calories: {recipe.recipe.calories.toFixed(2)}</p>
+            <a href={recipe.recipe.url}>View Recipe</a>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
